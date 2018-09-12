@@ -6,7 +6,8 @@ new Vue ({
         gameIsRunning: false,
         mW: false,
         pW: false,
-        dW: false
+        dW: false,
+        turns: []
     },
 
     methods: {
@@ -17,17 +18,27 @@ new Vue ({
             this.mW = false;
             this.pW = false;
             this.dW = false;
+            this.turns = [];
         },
 
         attack(){
-            this.monsterHealth -= this.calculateDamage(3, 10);
-            this.whoWin()
-
+            let damage = this.calculateDamage(3, 10);
+            this.monsterHealth -= damage
+            this.turns.unshift({
+                isPlayer: true,
+                text: `Player hits monster for  ${damage}`
+            });
+            this.whoWin();
             this.monsterAttack();
         },
 
         specialAttack(){
-            this.monsterHealth -= this.calculateDamage(10, 17);
+            let damage = this.calculateDamage(10, 17);
+            this.monsterHealth -= damage;
+            this.turns.unshift({
+                isPlayer: true,
+                text: `Player hits monster ${damage}`
+            });
             this.whoWin()
             this.monsterAttack();
         },
@@ -39,6 +50,10 @@ new Vue ({
             else{
                 this.playerHealth = 100;
             }
+            this.turns.unshift({
+                isPlayer: true,
+                text: 'Player heals for 10'
+            });
             this.monsterAttack();
         },
 
@@ -51,7 +66,13 @@ new Vue ({
         },
 
         monsterAttack(){
-            this.playerHealth -= this.calculateDamage(5, 12);
+            let damage = this.calculateDamage(5, 12);
+            this.playerHealth -= damage;
+            this.turns.unshift({
+                isPlayer: false,
+                text: `Monster hits player for ${damage}`
+            });
+            console.log(this.turns);
             this.whoWin()
         },
 
@@ -68,8 +89,6 @@ new Vue ({
                 this.mW = true;
                 this.gameIsRunning = false;
             }
-        }
-
-
+        },
     }
 })
